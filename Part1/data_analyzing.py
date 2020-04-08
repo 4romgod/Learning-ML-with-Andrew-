@@ -5,17 +5,19 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 
-raw_training_data = pd.read_csv("Absolute_Path_to_file/train.csv")
-raw_testing_data = pd.read_csv("Absolute_Path_to_file/test.csv")
+raw_training_data = pd.read_csv("train.csv")
+raw_testing_data = pd.read_csv("test.csv")
+
 print(raw_training_data.size)
+
 train_data = raw_training_data.dropna()
 test_data = raw_testing_data.dropna()
 
-# print(train_data.shape)
-# print(train_data['x'])
+print(train_data.shape)
+print(train_data['x'])
 
-X = train_data.as_matrix(columns= ['x']).reshape(699)
-Y = train_data.as_matrix(columns= ['y']).reshape(699)
+X = train_data['x']
+Y = train_data['y']
 
 print("Mean of x values is %f and median is %f\n" % (np.mean(X), np.median(X)))
 print("Mean of y values is %f and median is %f\n" % (np.mean(Y), np.median(Y)))

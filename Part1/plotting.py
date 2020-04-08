@@ -3,13 +3,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-raw_training_data = pd.read_csv("Absolute_Path_to_file/train.csv")
-raw_testing_data = pd.read_csv("Absolute_Path_to_file/test.csv")
+raw_training_data = pd.read_csv("train.csv")
+raw_testing_data = pd.read_csv("test.csv")
 train_data = raw_training_data.dropna()
 test_data = raw_testing_data.dropna()
 
-X = train_data.as_matrix(columns= ['x']).reshape(699)
-Y = train_data.as_matrix(columns= ['y']).reshape(699)
+X = train_data['x']
+Y = train_data['y']
 
 X = np.array(X)
 Y = np.array(Y)

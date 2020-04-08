@@ -17,17 +17,39 @@ def hypothesis(theta_array, x):
 
 def cost_function(theta_array, x_value, y_value, m):
     # This function returns our cost function value at particular theta values
+    # J(theta_0, theta_1) = (1/2m)*[MSE(H(x)-y)^2] # Mean Square Error
+
     total_error = 0
     for i in range(m):
         total_error += (theta_array[0] + theta_array[1]*x_value[i] - y_value[i])**2
     return total_error/(2*m)
 
 
+def improvise_thetas(theta_array, X, Y, alpha, m, iteration_number):
+    """" This function updates the values of theta_0 and theta_1 and returns an array containing
+            the updated theta values. This is where gradient descent takes place """
+
+    # initializing summations to zero
+    summation_0 = 0
+    summation_1 = 0
+
+    for i in range(m):        # finding the value of summations and finally the value of
+        summation_0 += (theta_array[0] + theta_array[1]*X[i]) - Y[i]
+        summation_1 += X[i]*((theta_array[0] + theta_array[1]*X[i])-Y[i])
+
+    # updating values of both the theta's simultaneously
+    new_theta_0 = theta_array[0] - alpha * (summation_0) / m
+    new_theta_1 = theta_array[1] - alpha * (summation_1) / m
+
+    updated_theta_array = [new_theta_0, new_theta_1]
+
+    return updated_theta_array
+
+
 def training(x_train, y_train, alpha, iters):
     # This is the function which takes care of the Regression
 
-    # Finding size of the training data
-    m = x_train.size
+    m = x_train.size        # Finding size of the training data
 
     # initializing values of thetas
     theta_0 = 0     # bias
@@ -131,28 +153,6 @@ def training(x_train, y_train, alpha, iters):
     return theta_array
 
 
-def improvise_thetas(theta_array, X, Y, alpha, m, iteration_number):
-    ''' This function updates the values of theta_0 and theta_1 and returns an array containing
-            the updated theta values. This is where gradient descent takes place '''
-
-    # initializing summations to zero
-    summation_0 = 0
-    summation_1 = 0
-
-    for i in range(m):        # finding the value of summations and finally the value of
-        summation_0 += (theta_array[0] + theta_array[1]*X[i]) - Y[i]
-
-        summation_1 += X[i]*((theta_array[0] + theta_array[1]*X[i])-Y[i])
-
-    # updating values of both the theta's
-    new_theta_0 = theta_array[0] - alpha * (summation_0) / m
-    new_theta_1 = theta_array[1] - alpha * (summation_1) / m
-
-    updated_theta_array = [new_theta_0, new_theta_1]
-
-    return updated_theta_array
-
-
 def testing(x_test, y_test, theta_array):
     m = x_test.size
 
@@ -200,8 +200,8 @@ if __name__ == "__main__" :
 
     # Load the data, both for training and testing. I'm using the 'pandas' library to do this here.
     # If you are only given training data, then set aside a part of it for testing.
-    raw_training_data = pd.read_csv("Absolute_Path_to_file/train.csv")
-    raw_testing_data = pd.read_csv("Absolute_Path_to_file/test.csv")
+    raw_training_data = pd.read_csv("train.csv")
+    raw_testing_data = pd.read_csv("test.csv")
 
     # Cleaning the data by removing the rows with "NaN" values in them. dropna() does the job
     cleaned_training_data = raw_training_data.dropna()
@@ -209,12 +209,12 @@ if __name__ == "__main__" :
     # Note : The data cleaning step must be changed according to your data
 
     # Segregating the testing and training data into 'x' and 'y' and making them ready for training
-    x_train_new = cleaned_training_data.as_matrix(columns=['x'])
-    y_train_new = cleaned_training_data.as_matrix(columns=['y'])
+    x_train_new = cleaned_training_data['x']
+    y_train_new = cleaned_training_data['y']
 
     # reshaping the data from (699,1) to (699)
-    x_train = x_train_new.reshape(x_train_new.size)
-    y_train = y_train_new.reshape(y_train_new.size)
+    x_train = x_train_new.values.reshape(x_train_new.size)
+    y_train = y_train_new.values.reshape(y_train_new.size)
     # print(x_train.shape) #use this if you want to print the size of x and y
 
     # defining a learning rate
@@ -228,7 +228,7 @@ if __name__ == "__main__" :
 
     print("\n*** The final value of theta_0 is ",theta_array[0]," and theta_1 is ",theta_array[1]," ***\n")
 
-    x_test = cleaned_testing_data.as_matrix(columns=['x'])
-    y_test = cleaned_testing_data.as_matrix(columns=['y'])
+    x_test = cleaned_testing_data['x']
+    y_test = cleaned_testing_data['y']
 
     testing(x_test, y_test, theta_array)
